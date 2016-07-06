@@ -1,6 +1,12 @@
 <html>
     <head>
-        <title>{% block title %}{% endblock %}</title>
+        <title>
+            {%- if block("title") -%}
+                {{ block('title') }} | star wars events
+            {%- else -%}
+                Event from a galaxy far far away
+            {%- endif -%}
+        </title>
     </head>
 
     <link rel="stylesheet" href="{{ asset('bundles/yodaevent/default.css') }}" />

@@ -3,6 +3,11 @@ yoda_event_homepage:
     path:     /hello/{name}/{count}
     defaults: { _controller: YodaEventBundle:Default:index }
 
-yoda_event_event:
-    resource: "@YodaEventBundle/Resources/config/routing/event.yml"
+yoda_event_annotation:
+    resource: "@YodaEventBundle/Controller"
     prefix:   /event
+    type:     annotation
+
+#yoda_event_event:
+#    resource: "@YodaEventBundle/Resources/config/routing/event.yml"
+#    prefix:   /event

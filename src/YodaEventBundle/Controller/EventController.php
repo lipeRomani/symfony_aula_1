@@ -2,6 +2,8 @@
 
 namespace YodaEventBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -16,7 +18,8 @@ class EventController extends Controller
 {
     /**
      * Lists all Event entities.
-     *
+     * @Template("YodaEventBundle:Event:index.html.twig")
+     * @Route("/",name="event_index")
      */
     public function indexAction()
     {
@@ -24,14 +27,12 @@ class EventController extends Controller
 
         $events = $em->getRepository('YodaEventBundle:Event')->findAll();
 
-        return $this->render('@YodaEvent/Event/index.html.twig', array(
-            'events' => $events,
-        ));
+        return ['events' => $events];
     }
 
     /**
      * Creates a new Event entity.
-     *
+     * @Route("/new",name="event_new")
      */
     public function newAction(Request $request)
     {
@@ -55,7 +56,7 @@ class EventController extends Controller
 
     /**
      * Finds and displays a Event entity.
-     *
+     * @Route("/{id}/show",name="event_show")
      */
     public function showAction(Event $event)
     {
@@ -69,7 +70,7 @@ class EventController extends Controller
 
     /**
      * Displays a form to edit an existing Event entity.
-     *
+     * @Route("/{id}/edit",name="event_edit",methods={"GET","POST"})
      */
     public function editAction(Request $request, Event $event)
     {
@@ -94,7 +95,7 @@ class EventController extends Controller
 
     /**
      * Deletes a Event entity.
-     *
+     * @Route("/{id}/delete",name="event_delete",methods={"DELETE"})
      */
     public function deleteAction(Request $request, Event $event)
     {
