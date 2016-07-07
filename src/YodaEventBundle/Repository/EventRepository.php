@@ -10,4 +10,5 @@ namespace YodaEventBundle\Repository;
  */
 class EventRepository extends \Doctrine\ORM\EntityRepository
 {
+
 }

@@ -3,6 +3,7 @@
 namespace YodaEventBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,6 +26,8 @@ class EventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        //$user = $em->getRepository('UserBundle:User')->findByUsernameOrEmail('bar@bar.com');
+
         $events = $em->getRepository('YodaEventBundle:Event')->findAll();
 
         return ['events' => $events];
@@ -33,9 +36,11 @@ class EventController extends Controller
     /**
      * Creates a new Event entity.
      * @Route("/new",name="event_new")
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function newAction(Request $request)
     {
+
         $event = new Event();
         $form = $this->createForm('YodaEventBundle\Form\EventType', $event);
         $form->handleRequest($request);
@@ -71,9 +76,11 @@ class EventController extends Controller
     /**
      * Displays a form to edit an existing Event entity.
      * @Route("/{id}/edit",name="event_edit",methods={"GET","POST"})
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function editAction(Request $request, Event $event)
     {
+
         $deleteForm = $this->createDeleteForm($event);
         $editForm = $this->createForm('YodaEventBundle\Form\EventType', $event);
         $editForm->handleRequest($request);
@@ -96,6 +103,7 @@ class EventController extends Controller
     /**
      * Deletes a Event entity.
      * @Route("/{id}/delete",name="event_delete",methods={"DELETE"})
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function deleteAction(Request $request, Event $event)
     {
@@ -126,4 +134,5 @@ class EventController extends Controller
             ->getForm()
         ;
     }
+
 }

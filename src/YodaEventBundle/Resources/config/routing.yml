@@ -5,7 +5,7 @@ yoda_event_homepage:
 
 yoda_event_annotation:
     resource: "@YodaEventBundle/Controller"
-    prefix:   /event
+    prefix:   /
     type:     annotation
 
 #yoda_event_event:
