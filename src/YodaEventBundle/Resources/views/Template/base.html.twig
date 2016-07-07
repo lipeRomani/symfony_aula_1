@@ -36,6 +36,7 @@
                     <li><a href="{{ path('logout') }}">Sair <strong>{{ app.user.username }}</strong></a></li>
                 {% else %}
                     <li><a href="{{ path('login_form') }}">Login</a></li>
+                    <li><a href="{{ path('user_register') }}">Registrar</a></li>
                 {% endif %}
 
                 {% if is_granted('ROLE_USER') %}

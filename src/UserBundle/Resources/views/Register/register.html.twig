@@ -1,0 +1,25 @@
+{% extends 'YodaEventBundle:Template:base.html.twig' %}
+
+{% block body %}
+    <h1>Register</h1>
+    <hr class="divider" />
+
+    <form action="{{ path('user_register') }}" method="post" novalidate="novalidate">
+        {{ form_errors(form) }}
+
+        {{ form_row(form.username) }}
+        {{ form_row(form.email) }}
+
+        <hr class="divider" />
+
+        {{ form_row(form.plainPassword.first,{label:'Password'}) }}
+        {{ form_row(form.plainPassword.second,{label:'Repeat Password'}) }}
+
+        {{ form_rest(form) }}
+
+        <button class="btn btn-primary" type="submit">
+            Registrar
+        </button>
+    </form>
+    
+{% endblock %}

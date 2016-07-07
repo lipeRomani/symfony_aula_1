@@ -3,16 +3,24 @@
 namespace UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraint as Assert;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * User
  *
  * @ORM\Table(name="yoda_user")
  * @ORM\Entity(repositoryClass="UserBundle\Repository\UserRepository")
+ * @UniqueEntity(fields={"username"},message="Campo username deve ser unico")
+ * @UniqueEntity(fields={"email"},message="Campo e-mail deve ser unico")
  */
-class User implements AdvancedUserInterface
+class User implements AdvancedUserInterface, \Serializable
 {
     /**
      * @var int
@@ -27,6 +35,8 @@ class User implements AdvancedUserInterface
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
+     * @NotBlank(message="username deve ser preenchido")
+     * @Length(min="3",minMessage="username deve conter no minimo 3 letras")
      */
     private $username;
 
@@ -36,6 +46,13 @@ class User implements AdvancedUserInterface
      * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
+
+    /**
+     * @var
+     * @NotBlank(message="Password nao pode ser em branco")
+     * @Regex(pattern="/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$/",message="Use 1 upper case letter, 1 lower case letter, and 1 number")
+     */
+    private $plainPassword;
 
     /**
      * @ORM\Column(name="roles", type="json_array")
@@ -49,6 +66,8 @@ class User implements AdvancedUserInterface
 
     /**
      * @ORM\Column(type="string",length=255)
+     * @NotBlank(message="Email não pode ser deixao em branco")
+     * @Email(message="Este campo deve conter um e-mail válido")
      */
     private $email;
 
@@ -160,7 +179,7 @@ class User implements AdvancedUserInterface
      */
     public function eraseCredentials()
     {
-
+        $this->setPlainPassword(null);
     }
 
     /**
@@ -264,4 +283,55 @@ class User implements AdvancedUserInterface
     {
         return $this->email;
     }
+
+    /**
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->password
+        ]);
+    }
+
+    /**
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+            ) = unserialize($serialized);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+
 }
