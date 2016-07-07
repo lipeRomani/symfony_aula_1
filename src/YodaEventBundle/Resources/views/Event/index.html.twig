@@ -3,6 +3,13 @@
 {% block title %}Jedi Masters{% endblock %}
 
 {% block body %}
+
+    {% for message in app.session.flashBag.get('notice') %}
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
     <h1>Event list</h1>
 
     <table class="table">

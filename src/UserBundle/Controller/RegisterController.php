@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use UserBundle\Entity\User;
 use UserBundle\Form\RegisterFormType;
 
@@ -36,6 +37,8 @@ class RegisterController extends Controller
             $em->persist($user);
             $em->flush();
 
+            $this->authenticateUser($user);
+            $this->addFlash('notice','Welcome to the Death Star');
             return $this->redirectToRoute('event_index');
         }
 
@@ -49,6 +52,17 @@ class RegisterController extends Controller
             ->getEncoder($user);
 
         return $encoder->encodePassword($plainPassword, $user->getSalt());
+    }
+
+    private function authenticateUser(User $user){
+
+        //firewall name inside app/config/security.yml
+        $providerkey = 'secured_area';
+
+        $token = new UsernamePasswordToken($user,null,$providerkey,$user->getRoles());
+        $this->container->get('security.token_storage')->setToken($token);
+        $this->get('session')->set('_security_main',serialize($token));
+
     }
 
 }
