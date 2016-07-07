@@ -22,8 +22,15 @@ class SecurityController extends Controller{
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
+        $teste = "teste";
+        return ['last_username' => $lastUsername,'error'=> $error, 'teste' => $teste];
+    }
 
-        return ['last_username' => $lastUsername,'error'=> $error];
+    /**
+     * @Route("/logout",name="logout")
+     */
+    public function logout(){
+
     }
 
 }
