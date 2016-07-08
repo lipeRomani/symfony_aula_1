@@ -2,7 +2,11 @@
 
 namespace YodaEventBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Gedmo\Mapping\Annotation\Slug;
+use UserBundle\Entity\User;
 
 /**
  * Event
@@ -49,6 +53,33 @@ class Event
      */
     private $details;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="UserBundle\Entity\User",inversedBy="events")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     *
+     */
+    private $owner;
+
+    /**
+     * @ORM\Column(length=255, unique=true)
+     * @Slug(fields={"name"},updatable=false)
+     */
+    private $slug;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="UserBundle\Entity\User")
+     * @ORM\JoinTable(joinColumns={@JoinColumn(onDelete="CASCADE")},inverseJoinColumns={@JoinColumn(onDelete="CASCADE")})
+     */
+    private $attendees;
+
+    /**
+     * Event constructor.
+     * @param int $id
+     */
+    public function __construct()
+    {
+        $this->attendees = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -155,5 +186,49 @@ class Event
     {
         return $this->details;
     }
+
+    /**
+     * @return User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param User $owner
+     */
+    public function setOwner(User $owner)
+    {
+        $this->owner = $owner;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param mixed $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAttendees()
+    {
+        return $this->attendees;
+    }
+
+
+
+
 }
 

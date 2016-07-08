@@ -4,12 +4,13 @@ namespace UserBundle\DataFixtures\ORM;
 
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use UserBundle\Entity\User;
 
-class LoadUsers implements FixtureInterface, ContainerAwareInterface
+class LoadUsers implements FixtureInterface, ContainerAwareInterface, OrderedFixtureInterface
 {
 
     private $container;
@@ -43,5 +44,15 @@ class LoadUsers implements FixtureInterface, ContainerAwareInterface
         $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
 
         return $encoder->encodePassword($plainPassword,$user->getSalt());
+    }
+
+    /**
+     * Get the order of this fixture
+     *
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return 10;
     }
 }

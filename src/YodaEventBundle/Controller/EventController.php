@@ -6,8 +6,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use YodaEventBundle\Entity\Event;
 use YodaEventBundle\Form\EventType;
 
@@ -17,6 +17,7 @@ use YodaEventBundle\Form\EventType;
  */
 class EventController extends Controller
 {
+
     /**
      * Lists all Event entities.
      * @Template("YodaEventBundle:Event:index.html.twig")
@@ -26,7 +27,7 @@ class EventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $events = $em->getRepository('YodaEventBundle:Event')->findAll();
+        $events = $em->getRepository('YodaEventBundle:Event')->upcomingEvents();
 
         return ['events' => $events];
     }
@@ -44,11 +45,13 @@ class EventController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            $event->setOwner($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($event);
             $em->flush();
 
-            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+            return $this->redirectToRoute('event_show', array('slug' => $event->getSlug()));
         }
 
         return $this->render('@YodaEvent/Event/new.html.twig', array(
@@ -59,10 +62,14 @@ class EventController extends Controller
 
     /**
      * Finds and displays a Event entity.
-     * @Route("/{id}/show",name="event_show")
+     * @Route("/{slug}/show",name="event_show")
      */
-    public function showAction(Event $event)
+    public function showAction($slug)
     {
+        $event = $this->getDoctrine()
+            ->getRepository("YodaEventBundle:Event")
+            ->findOneBy(['slug' => $slug]);
+
         $deleteForm = $this->createDeleteForm($event);
 
         return $this->render('@YodaEvent/Event/show.html.twig', array(
@@ -78,6 +85,7 @@ class EventController extends Controller
      */
     public function editAction(Request $request, Event $event)
     {
+        $this->eventOwnerSecurity($event);
 
         $deleteForm = $this->createDeleteForm($event);
         $editForm = $this->createForm('YodaEventBundle\Form\EventType', $event);
@@ -131,6 +139,12 @@ class EventController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    private function enforceUserSecurity($role = 'ROLE_USER'){
+
+        if(!$this->getAuthorizationChecker()->isGranted($role))
+            throw new AccessDeniedException('Need ' . $role);
     }
 
 }

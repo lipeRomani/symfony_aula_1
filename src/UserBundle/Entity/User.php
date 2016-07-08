@@ -2,6 +2,7 @@
 
 namespace UserBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -66,10 +67,20 @@ class User implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string",length=255,nullable=false)
-     * @NotBlank(message="campo nao pode ser vazio")
+     * @NotBlank(message="Email não pode ser deixao em branco")
      * @Email(message="campo deve ser email")
      */
     private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity="YodaEventBundle\Entity\Event",mappedBy="owner")
+     */
+    private $events;
+
+
+    public function __construct(){
+        $this->events = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -214,6 +225,15 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return true;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
 
     /**
      * Checks whether the user is locked.

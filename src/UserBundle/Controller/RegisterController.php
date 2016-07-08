@@ -5,7 +5,7 @@ namespace UserBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use YodaEventBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use UserBundle\Entity\User;
@@ -45,6 +45,14 @@ class RegisterController extends Controller
         return ['form' => $form->createView()];
     }
 
+    /**
+     * @param User $user
+     * @Route("/user/{id}")
+     */
+    public function showAction(User $user){
+
+    }
+
     private function encodePassword(User $user, $plainPassword){
 
         $encoder = $this->container
@@ -60,7 +68,7 @@ class RegisterController extends Controller
         $providerkey = 'secured_area';
 
         $token = new UsernamePasswordToken($user,null,$providerkey,$user->getRoles());
-        $this->container->get('security.token_storage')->setToken($token);
+        $this->getTokenStorage()->setToken($token);
         $this->get('session')->set('_security_main',serialize($token));
 
     }
