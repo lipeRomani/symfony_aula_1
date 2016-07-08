@@ -26,8 +26,6 @@ class EventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        //$user = $em->getRepository('UserBundle:User')->findByUsernameOrEmail('bar@bar.com');
-
         $events = $em->getRepository('YodaEventBundle:Event')->findAll();
 
         return ['events' => $events];
@@ -36,7 +34,7 @@ class EventController extends Controller
     /**
      * Creates a new Event entity.
      * @Route("/new",name="event_new")
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_EVENT_CREATE')")
      */
     public function newAction(Request $request)
     {

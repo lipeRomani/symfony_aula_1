@@ -65,9 +65,9 @@ class User implements AdvancedUserInterface, \Serializable
     private $isActive;
 
     /**
-     * @ORM\Column(type="string",length=255)
-     * @NotBlank(message="Email não pode ser deixao em branco")
-     * @Email(message="Este campo deve conter um e-mail válido")
+     * @ORM\Column(type="string",length=255,nullable=false)
+     * @NotBlank(message="campo nao pode ser vazio")
+     * @Email(message="campo deve ser email")
      */
     private $email;
 

@@ -42,12 +42,15 @@ class RegisterControllerTest extends WebTestCase
     }
 
     public function testUserRegisterAllInformation(){
+
         $client  = static::createClient();
+
+        $this->eraseUserTable();
 
         $crawler = $client->request('GET','/register');
         $form = $crawler->selectButton('Registrar')->form();
-        $form['user_register[username]'] = 'user6';
-        $form['user_register[email]'] = 'user6@user.com';
+        $form['user_register[username]'] = 'user';
+        $form['user_register[email]'] = 'user@user.com';
         $form['user_register[plainPassword][first]'] = 'C1c';
         $form['user_register[plainPassword][second]'] = 'C1c';
 
@@ -57,5 +60,16 @@ class RegisterControllerTest extends WebTestCase
         $client->followRedirect();
         $this->assertContains('Welcome to the Death Star',$client->getResponse()->getContent());
 
+    }
+
+    private function eraseUserTable()
+    {
+        $container = self::$kernel->getContainer();
+        $manager = $container->get('doctrine')->getManager();
+        $manager->getRepository('UserBundle:User')
+            ->createQueryBuilder('u')
+            ->delete()
+            ->getQuery()
+            ->execute();
     }
 }

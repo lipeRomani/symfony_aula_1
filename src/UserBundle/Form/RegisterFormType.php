@@ -30,7 +30,6 @@ class RegisterFormType extends AbstractType
                 'attr' => ['class'=>'form-control']
             ])
             ->add('email',EmailType::class,[
-                'required' => false,
                 'label' => 'Email address',
                 'attr' => ['class' => 'form-control']
             ])
