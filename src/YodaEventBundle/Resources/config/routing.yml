@@ -8,6 +8,7 @@ yoda_event_annotation:
     prefix:   /
     type:     annotation
 
-#yoda_event_event:
-#    resource: "@YodaEventBundle/Resources/config/routing/event.yml"
-#    prefix:   /event
+yoda_event_event:
+    resource: "@YodaEventBundle/Resources/config/routing/event.yml"
+    prefix:   /
+

@@ -67,6 +67,7 @@ class Event
     private $slug;
 
     /**
+     *
      * @ORM\ManyToMany(targetEntity="UserBundle\Entity\User")
      * @ORM\JoinTable(joinColumns={@JoinColumn(onDelete="CASCADE")},inverseJoinColumns={@JoinColumn(onDelete="CASCADE")})
      */
@@ -220,7 +221,7 @@ class Event
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getAttendees()
     {
@@ -228,7 +229,13 @@ class Event
     }
 
 
-
+    /**
+     * @param User $user
+     * @return boolean
+     */
+    public function hasAttendee(User $user){
+        return $this->getAttendees()->contains($user);
+    }
 
 }
 

@@ -5,8 +5,8 @@ namespace YodaEventBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use YodaEventBundle\Entity\Event;
 use YodaEventBundle\Form\EventType;
@@ -78,6 +78,54 @@ class EventController extends Controller
         ));
     }
 
+    public function attendAction($id,$format){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $event = $em->getRepository("YodaEventBundle:Event")
+                    ->find($id);
+
+        if(!$event) throw $this->createNotFoundException("Event not found for id " . $id);
+        if(!$event->hasAttendee($this->getUser())){
+            $event->getAttendees()->add($this->getUser());
+            $em->persist($event);
+            $em->flush();
+        }
+
+
+
+        if($format == 'json'){
+            $data = ['attending' => true];
+            $resp = new Response(json_encode($data));
+            return $resp;
+        }
+
+
+        return $this->redirectToRoute('event_show',['slug' => $event->getSlug()]);
+    }
+
+    public function unattendAction($id,$format){
+        $em = $this->getDoctrine()->getManager();
+        $event = $em->getRepository('YodaEventBundle:Event')->find($id);
+
+        if(!$event)
+            throw $this->createNotFoundException('Event not found for id ' . $id);
+
+        if($event->hasAttendee($this->getUser()));
+            $event->getAttendees()->removeElement($this->getUser());
+
+        $em->persist($event);
+        $em->flush();
+
+        if($format == 'json'){
+            $data = ['attending' => false];
+            return new Response(json_encode($data));
+        }
+
+        return $this->redirectToRoute('event_show',['slug' => $event->getSlug()]);
+
+    }
+
     /**
      * Displays a form to edit an existing Event entity.
      * @Route("/{id}/edit",name="event_edit",methods={"GET","POST"})
@@ -146,5 +194,6 @@ class EventController extends Controller
         if(!$this->getAuthorizationChecker()->isGranted($role))
             throw new AccessDeniedException('Need ' . $role);
     }
+
 
 }

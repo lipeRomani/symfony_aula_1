@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Event</h1>
 
-    <table>
+    <table class="table table-bordered">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -25,17 +25,40 @@
                 <th>Details</th>
                 <td>{{ event.details }}</td>
             </tr>
+            <tr>
+                <th>Attendees</th>
+                <td>{{ event.attendees|length }}</td>
+            </tr>
         </tbody>
     </table>
 
-    <ul>
-        <li>
+    <h2>Attendess</h2>
+
+    <ul class="list-group">
+        {% for attendee in event.attendees %}
+            <li class="list-group-item-success">{{ attendee }}</li>
+        {% else %}
+            <li class="list-group-item-warning">Nobody yet!</li>
+        {% endfor %}
+    </ul>
+
+    <ul class="list-group">
+        <li class="list-group-item">
             <a href="{{ path('event_index') }}">Back to the list</a>
         </li>
-        <li>
+        <li class="list-group-item">
             <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
         </li>
-        <li>
+        
+        <li class="list-group-item">
+            <a href="{{ path('event_attend',{'id': event.id}) }}">i want go</a>
+        </li>
+
+        <li class="list-group-item">
+            <a href="{{ path('event_unattend',{'id': event.id}) }}">i can't go anymore</a>
+        </li>
+        
+        <li class="list-group-item">
             {{ form_start(delete_form) }}
                 <input type="submit" value="Delete">
             {{ form_end(delete_form) }}

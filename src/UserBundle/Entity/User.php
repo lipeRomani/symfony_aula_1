@@ -4,6 +4,7 @@ namespace UserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -338,7 +339,7 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPlainPassword()
     {
@@ -352,6 +353,13 @@ class User implements AdvancedUserInterface, \Serializable
     {
         $this->plainPassword = $plainPassword;
     }
+
+    function __toString()
+    {
+        return (string) $this->username;
+    }
+
+
 
 
 }

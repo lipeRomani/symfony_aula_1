@@ -22,3 +22,16 @@
 #    path:     /{id}/delete
 #    defaults: { _controller: "YodaEventBundle:Event:delete" }
 #   methods:  DELETE
+
+event_attend:
+  path: /{id}/attend.{format}
+  defaults: {_controller: "YodaEventBundle:Event:attend",format: html}
+  requirements:
+    format: json
+
+event_unattend:
+  path: /{id}/unattend.{format}
+  defaults: {_controller: "YodaEventBundle:Event:unattend", format: html}
+  requirements:
+    format: json
+
