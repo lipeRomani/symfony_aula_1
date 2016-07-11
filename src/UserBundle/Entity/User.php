@@ -347,19 +347,21 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * @param mixed $plainPassword
+     * @param $plainPassword
+     * @return $this
      */
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
+        $this->setPassword(null);
+
+        return $this;
     }
 
     function __toString()
     {
         return (string) $this->username;
     }
-
-
 
 
 }

@@ -11,6 +11,7 @@ namespace YodaEventBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use YodaEventBundle\Reporting\EventReportManager;
 
 class ReportController extends Controller
 {
@@ -19,18 +20,9 @@ class ReportController extends Controller
      * @Route("/events/report/recentlyUpdated.csv",name="report_csv")
      */
     public function updatedEventsAction(){
-        $events = $this->getDoctrine()
-            ->getRepository('YodaEventBundle:Event')
-            ->getRecentlyUpdatedEvent();
 
-        $rows = [];
-        foreach($events as $event){
-            $data = [$event->getId(), $event->getName(), $event->getTime()->format('Y-m-d H:i:s')];
-            $rows[] = implode(',',$data);
-        }
-
-        $content = implode("\n",$rows);
-
+        $rm = $this->get('event_report_manager');
+        $content = $rm->getRecentlyUpdatedReport();
         return new Response($content,200,['Content-Type' =>"text/csv"]);
 
     }

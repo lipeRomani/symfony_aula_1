@@ -32,11 +32,13 @@ $em->persist($event);
 $em->flush();
 */
 
-$user = $container->get('doctrine')
-    ->getRepository('UserBundle:User')
-    ->findByUsernameOrEmail("yoda");
+$em = $container->get('doctrine')->getManager();
 
-foreach($user->getEvents() as $event){
-    echo $event->getName() . PHP_EOL;
-}
+$user = $em->getRepository('UserBundle:User')
+    ->findByUsernameOrEmail("bar");
+
+$user->setPlainPassword('123');
+$em->persist($user);
+$em->flush();
+
 

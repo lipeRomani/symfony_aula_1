@@ -29,7 +29,6 @@ class RegisterController extends Controller
         //o is valid ja retorna false caso o submit nao tenha sido post, o isSubmitted esta ai para fins de estudo
         if($form->isSubmitted() && $form->isValid()){
             $user = $form->getData();
-            $user->setPassword($this->encodePassword($user,$user->getPlainPassword()));
             $user->setRoles(['ROLE_ADMIN']);
             $user->setIsActive(true);
 
@@ -51,15 +50,6 @@ class RegisterController extends Controller
      */
     public function showAction(User $user){
 
-    }
-
-    private function encodePassword(User $user, $plainPassword){
-
-        $encoder = $this->container
-            ->get('security.encoder_factory')
-            ->getEncoder($user);
-
-        return $encoder->encodePassword($plainPassword, $user->getSalt());
     }
 
     private function authenticateUser(User $user){
