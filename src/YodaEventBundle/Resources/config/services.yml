@@ -7,3 +7,9 @@ services:
     arguments: []
     tags:
       - { name: twig.extension}
+
+  doctrine.event_listener:
+    class: YodaEventBundle\Doctrine\EventListener
+    arguments: []
+    tags:
+      - { name: doctrine.event_listener, event: prePersist}
