@@ -8,7 +8,10 @@
             {%- endif -%}
         </title>
 
-        <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+        {% block javascripts %}
+            <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+        {% endblock %}
+
         <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
@@ -37,11 +40,14 @@
                     <li>
                         <a href="{{ path('event_new') }}">Criar novo evento</a>
                     </li>
+
+                    <li>
+                        <a href="{{ path('report_csv')}}">Gerar CSV dos eventos</a>
+                    </li>
                 {% else %}
                     <li><a href="{{ path('login_form') }}">Login</a></li>
                     <li><a href="{{ path('user_register') }}">Registrar</a></li>
                 {% endif %}
-
 
             </ul>
         </div><!-- /.navbar-collapse -->

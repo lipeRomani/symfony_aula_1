@@ -1,6 +1,7 @@
 <?php
 
 namespace YodaEventBundle\Repository;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * EventRepository
@@ -11,13 +12,26 @@ namespace YodaEventBundle\Repository;
 class EventRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function upcomingEvents()
+    public function upcomingEvents($max = null)
     {
-        return $this->createQueryBuilder('e')
+        $qb = $this->createQueryBuilder('e')
             ->addOrderBy('e.time','ASC')
             ->andWhere('e.time > :now')
-            ->setParameter('now', new \DateTime())
-            ->getQuery()
-            ->execute();
+            ->setParameter('now', new \DateTime());
+
+        if($max) $qb->setMaxResults($max);
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function getRecentlyUpdatedEvent(){
+
+        $events =  $this->createQueryBuilder('e')
+        ->andWhere('e.updatedAt > :since')
+        ->setParameter('since',new \DateTime('24 hours ago'))
+        ->getQuery()
+        ->execute();
+
+        return $events;
     }
 }

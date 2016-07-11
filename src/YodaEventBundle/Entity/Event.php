@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Gedmo\Mapping\Annotation\Slug;
+use Symfony\Component\Validator\Constraints\DateTime;
 use UserBundle\Entity\User;
 
 /**
@@ -13,6 +14,7 @@ use UserBundle\Entity\User;
  *
  * @ORM\Table(name="yoda_event")
  * @ORM\Entity(repositoryClass="YodaEventBundle\Repository\EventRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Event
 {
@@ -74,8 +76,17 @@ class Event
     private $attendees;
 
     /**
+     * @ORM\Column(type="datetime",nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime",nullable=true)
+     */
+    private $updatedAt;
+
+    /**
      * Event constructor.
-     * @param int $id
      */
     public function __construct()
     {
@@ -237,5 +248,48 @@ class Event
         return $this->getAttendees()->contains($user);
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function updateTimestamps()
+    {
+        $this->setUpdatedAt(new \DateTime('now'));
+
+        if (!$this->getCreatedAt())
+            $this->setCreatedAt(new \DateTime('now'));
+    }
 }
 

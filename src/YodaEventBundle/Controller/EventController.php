@@ -5,6 +5,7 @@ namespace YodaEventBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -20,16 +21,16 @@ class EventController extends Controller
 
     /**
      * Lists all Event entities.
-     * @Template("YodaEventBundle:Event:index.html.twig")
+     * @Template()
      * @Route("/",name="event_index")
      */
     public function indexAction()
     {
+        /*
         $em = $this->getDoctrine()->getManager();
-
         $events = $em->getRepository('YodaEventBundle:Event')->upcomingEvents();
-
-        return ['events' => $events];
+        return ['events' => $events]; */
+        return [];
     }
 
     /**
@@ -39,6 +40,7 @@ class EventController extends Controller
      */
     public function newAction(Request $request)
     {
+
 
         $event = new Event();
         $form = $this->createForm('YodaEventBundle\Form\EventType', $event);
@@ -92,16 +94,7 @@ class EventController extends Controller
             $em->flush();
         }
 
-
-
-        if($format == 'json'){
-            $data = ['attending' => true];
-            $resp = new Response(json_encode($data));
-            return $resp;
-        }
-
-
-        return $this->redirectToRoute('event_show',['slug' => $event->getSlug()]);
+        return $this->createAttendingResponse($event,$format);
     }
 
     public function unattendAction($id,$format){
@@ -117,12 +110,7 @@ class EventController extends Controller
         $em->persist($event);
         $em->flush();
 
-        if($format == 'json'){
-            $data = ['attending' => false];
-            return new Response(json_encode($data));
-        }
-
-        return $this->redirectToRoute('event_show',['slug' => $event->getSlug()]);
+       return $this->createAttendingResponse($event,$format);
 
     }
 
@@ -195,5 +183,27 @@ class EventController extends Controller
             throw new AccessDeniedException('Need ' . $role);
     }
 
+    /**
+     * @param Event $event
+     * @param $format
+     * @return Response
+     */
+    private function createAttendingResponse(Event $event, $format){
 
+        $data = ['attending' => $event->hasAttendee($this->getUser())];
+
+        if($format == 'json')
+            return new JsonResponse($data);
+        else
+            return $this->redirectToRoute('event_show',['slug' => $event->getSlug()]);
+
+    }
+
+    public function _upcomingEventsAction($max = null){
+        $em = $this->getDoctrine()->getManager();
+        $events = $em->getRepository("YodaEventBundle:Event")
+                    ->upcomingEvents($max);
+
+        return $this->render('@YodaEvent/Event/_upcomingEvents.html.twig',['events' => $events]);
+    }
 }

@@ -27,7 +27,7 @@
             </tr>
             <tr>
                 <th>Attendees</th>
-                <td>{{ event.attendees|length }}</td>
+                <td id="js-attendess-count">{{ event.attendees|length }}</td>
             </tr>
         </tbody>
     </table>
@@ -51,12 +51,17 @@
         </li>
         
         <li class="list-group-item">
-            <a href="{{ path('event_attend',{'id': event.id}) }}">i want go</a>
+            <a href="{{ path('event_attend',{'id': event.id}) }}" class="btn btn-success btn-xs js-attend-toggle">
+                i want go
+            </a>
         </li>
 
         <li class="list-group-item">
-            <a href="{{ path('event_unattend',{'id': event.id}) }}">i can't go anymore</a>
+            <a href="{{ path('event_unattend',{'id': event.id}) }}" class="btn btn-warning btn-xs js-attend-toggle">
+                i can't go anymore
+            </a>
         </li>
+
         
         <li class="list-group-item">
             {{ form_start(delete_form) }}
@@ -64,4 +69,41 @@
             {{ form_end(delete_form) }}
         </li>
     </ul>
+
+    <section>
+        {{ render(controller('YodaEventBundle:Event:_upcomingEvents')) }}
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(document).ready(function() {
+            $('.js-attend-toggle').on('click', function(e) {
+                // prevents the browser from "following" the link
+                e.preventDefault();
+
+                var $anchor = $(this);
+                var url = $(this).attr('href')+'.json';
+                var count = $("#js-attendess-count");
+
+                var value  = parseInt(count.html());
+
+                $.post(url, null, function(data) {
+                    if (data.attending) {
+                        var message = 'See you there!';
+                        count.html(value + 1);
+                    } else {
+                        var message = 'We\'ll miss you!';
+                        if(value > 0) count.html(value - 1);
+                    }
+
+                    $anchor.after('<span class="label label-default">&#10004; '+message+'</span>');
+                    $anchor.hide();
+                });
+            });
+        });
+    </script>
+
 {% endblock %}

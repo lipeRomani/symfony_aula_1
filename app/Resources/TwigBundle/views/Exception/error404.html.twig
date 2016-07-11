@@ -1,0 +1,10 @@
+{% extends 'YodaEventBundle:Template:base.html.twig' %}
+
+{% block body %}
+    <h1>Pagina não encontrada</h1>
+    <hr />
+
+    <h3>Fique por dentro dos eventos</h3>
+    {{ render(controller('YodaEventBundle:Event:_upcomingEvents',{'max' : 1})) }}
+
+{% endblock %}
