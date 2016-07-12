@@ -1,18 +1,25 @@
 {% extends 'YodaEventBundle:Template:base.html.twig' %}
+{% form_theme form '::form_theme.html.twig' %}
 
 {% block body %}
     <h1>Register</h1>
     <hr class="divider" />
 
-    <form action="{{ path('user_register') }}" method="post">
+    <form action="{{ path('user_register') }}" method="post" novalidate="novalidate">
         {{ form_errors(form) }}
 
-        {{ form_row(form.username) }}
+        {{ form_row(form.username, {
+                'label': 'Nome de usuário',
+                'help' : "Nome de usuário que será ultilizado para login, deve ser único"
+
+            })
+        }}
         {{ form_row(form.email) }}
 
         <hr class="divider" />
 
         {{ form_row(form.plainPassword.first,{label:'Password'}) }}
+
         {{ form_row(form.plainPassword.second,{label:'Repeat Password'}) }}
 
         {{ form_rest(form) }}

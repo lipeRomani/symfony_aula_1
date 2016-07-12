@@ -1,4 +1,5 @@
 {% extends '@YodaEvent/Template/base.html.twig' %}
+{% form_theme form "::form_theme.html.twig" %}
 
 {% block body %}
     <h1>Event creation</h1>
@@ -6,7 +7,8 @@
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create" />
+
+        <input type="submit" value="Create" class="btn btn-success" />
     {{ form_end(form) }}
 
     <ul>
