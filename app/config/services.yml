@@ -11,3 +11,7 @@ services:
         class: YodaEventBundle\Reporting\EventReportManager
         arguments: ["@doctrine.orm.entity_manager","@router"]
 
+    #app.command.event_yoda:
+     #   class: AppBundle\Command\EventsCommand
+      #  tags:
+       #     - { name: console.command}
